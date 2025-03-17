@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ username }}!</h1>
+
+    <h2>Your Files</h2>
+    <ul>
+        {% if files %}
+            {% for file in files %}
+                <li>
+                    {{ file }}
+                    
+                    <!-- Download section -->
+                    <form action="{{ url_for('download', filename=file) }}" method="POST" style="display:inline;">
+                        <input type="text" name="encryption_key" placeholder="Enter Key" required>
+                        <button type="submit">Download</button>
+                    </form> 
+    
+                    <!-- Delete section -->
+                    <form action="{{ url_for('delete', filename=file) }}" method="POST" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li>No files uploaded yet.</li>
+        {% endif %}
+    </ul>
+
+    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <input type="text" name="encryption_key" placeholder="Enter encryption key" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+</body>
+</html>
