@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup 2FA - SecureBox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+    <div class="text-center">
+        <h1 class="text-3xl font-bold mb-4 text-blue-400">Setup 2FA with Google Authenticator</h1>
+        <p class="mb-4 text-gray-400">Scan the QR code below with Google Authenticator to enable 2FA for your account.</p>
+        <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" class="mx-auto mb-4">
+        <p>Once scanned, you can <a href="{{ url_for('login') }}" class="text-blue-400 hover:underline">log in</a> with your username, password, and OTP.</p>
+    </div>
+</body>
+</html>

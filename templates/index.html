@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBox - Your Encrypted Cloud</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Smooth fade-in effect */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glowing buttons */
+        .btn-glow {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        .btn-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Floating Android button */
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #32de84, #1eb980);
+            color: white;
+            padding: 14px 20px;
+            font-weight: bold;
+            border-radius: 50px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 255, 127, 0.6);
+            transition: transform 0.3s ease-in-out;
+        }
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Smooth wave effect */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/e/e4/Wave.svg');
+            background-size: cover;
+            animation: wave-move 6s infinite linear;
+        }
+        @keyframes wave-move {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center" style="padding-bottom: 120px;">
+
+    <!-- Hero Section -->
+    <div class="text-center fade-in py-20">
+        <h1 class="text-5xl font-extrabold text-blue-400 drop-shadow-md">SecureBox</h1>
+        <p class="text-lg text-gray-300 mt-3">Secure, private cloud storage with user-controlled encryption.</p>
+        <div class="mt-6">
+            <a href="{{ url_for('register') }}" class="btn-glow inline-block bg-blue-500 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300">
+                Get Started for Free
+            </a>
+        </div>
+    </div>
+
+    <!-- About SecureBox -->
+    <div class="w-full max-w-4xl text-center px-6 fade-in">
+        <h2 class="text-3xl font-semibold text-blue-300">About SecureBox</h2>
+        <p class="text-lg text-gray-400 mt-3">
+            SecureBox is a cloud storage solution designed to prioritize your privacy and security. We offer a platform where you can upload, manage, and download your files with confidence, knowing they are protected by industry-standard encryption that only you control. Unlike other services, SecureBox ensures that your data remains yours alone—our user-friendly interface and robust security features make it the ideal choice for individuals and businesses seeking a reliable and private storage solution.
+        </p>
+    </div>
+
+    <!-- Why Choose SecureBox? -->
+    <div class="w-full max-w-4xl text-center px-6 mt-12 fade-in">
+        <h2 class="text-3xl font-semibold text-blue-300">Why Choose SecureBox?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-blue-400">End-to-End Encryption</h3>
+                <p class="text-gray-400">Your files are secured with a key only you possess, ensuring maximum privacy.</p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-blue-400">File Compression</h3>
+                <p class="text-gray-400">Optimize storage with automatic compression before encryption.</p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-blue-400">Transparent Error Logging</h3>
+                <p class="text-gray-400">Monitor and manage errors seamlessly during file operations.</p>
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-xl font-bold text-blue-400">Affordable Plans</h3>
+                <p class="text-gray-400">Flexible pricing options tailored to your storage needs.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="w-full max-w-5xl px-6 mt-12 fade-in">
+        <h2 class="text-3xl font-semibold text-center text-blue-300">Pricing Plans</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+            <!-- Free Plan -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center transition transform hover:scale-105">
+                <h3 class="text-xl font-bold text-blue-400">Free</h3>
+                <p class="text-2xl my-2 text-white">0$/month</p>
+                <ul class="text-left text-gray-400 mb-4">
+                    <li>15MB Storage</li>
+                    <li>Basic Encryption (Fernet)</li>
+                    <li>File Upload, Download, Delete</li>
+                    <li>Error Logging</li>
+                    <li>Two-Factor Authentication</li>
+                </ul>
+                <a href="{{ url_for('register') }}" class="block mt-4 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">Sign Up</a>
+            </div>
+            <!-- Basic Plan -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center transition transform hover:scale-105">
+                <h3 class="text-xl font-bold text-green-400">Basic</h3>
+                <p class="text-2xl my-2 text-white">5$/month</p>
+                <ul class="text-left text-gray-400 mb-4">
+                    <li>50GB Storage</li>
+                    <li>Advanced Encryption Options</li>
+                    <li>Email Verification</li>
+                    <li>More Data Types </li>
+                </ul>
+                <button class="block w-full mt-4 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition">Choose Plan (Coming Soon)</button>
+            </div>
+            <!-- Pro Plan -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center transition transform hover:scale-105">
+                <h3 class="text-xl font-bold text-purple-400">Pro</h3>
+                <p class="text-2xl my-2 text-white">10$/month</p>
+                <ul class="text-left text-gray-400 mb-4">
+                    <li>200GB Storage</li>
+                    <li>Data Sharing</li>
+                    <li>Phone Verification</li>
+                    <li>Customized Encryption</li>
+                </ul>
+                <button class="block w-full mt-4 bg-purple-500 text-white py-2 rounded-lg hover:bg-purple-600 transition">Choose Plan (Coming Soon)</button>
+            </div>
+            <!-- Enterprise Plan -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center transition transform hover:scale-105">
+                <h3 class="text-xl font-bold text-red-400">Enterprise</h3>
+                <p class="text-2xl my-2 text-white">25$/month</p>
+                <ul class="text-left text-gray-400 mb-4">
+                    <li>1TB Storage</li>
+                    <li>Custom Encryption Solutions</li>
+                    <li>Dedicated Account Manager</li>
+                    <li>Custom Features Upon Request</li>
+                </ul>
+                <button class="block w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition">Choose Plan (Coming Soon)</button>
+            </div>
+        </div>
+        <p class="text-center text-gray-400 mt-4">Paid plans coming soon! Sign up for free today and upgrade later.</p>
+    </div>
+
+ <!-- Encryption Methods -->
+<div class="w-full max-w-4xl px-6 mt-12 fade-in">
+    <h2 class="text-3xl font-semibold text-center text-blue-300">Our Encryption Methods</h2>
+    <p class="text-lg text-gray-400 mt-3 text-center">
+        At SecureBox, your privacy and security are our top priorities. We employ advanced encryption techniques to ensure your files remain confidential and accessible only to you. Here’s how we protect your data:
+    </p>
+    <div class="mt-6 text-gray-300 space-y-4">
+        <p>
+            <strong>Fernet Symmetric Encryption:</strong> SecureBox uses Fernet, a battle-tested symmetric encryption method from the Cryptography library. Fernet combines AES-128 in CBC mode with PKCS7 padding and HMAC-SHA256 for authentication, ensuring your files are encrypted with industry-standard strength and integrity.
+        </p>
+        <p>
+            <strong>Personalized Key Derivation:</strong> Your encryption key is uniquely generated by combining your username with a secret key you provide during upload. This mixture is processed through a SHA-256 hash function and base64-encoded to create a secure 32-byte key. This means even we at SecureBox can’t decrypt your files—only you hold the key.
+        </p>
+        <p>
+            <strong>Selective Compression:</strong> To optimize storage, we apply zlib compression (DEFLATE algorithm) to text-based files like .txt, .doc, and .docx, reducing their size before encryption. For already-compressed formats like .pdf, .png, and .jpg, we skip compression to preserve quality and efficiency, ensuring your files are handled intelligently.
+        </p>
+        <p>
+            <strong>End-to-End Security:</strong> From the moment you upload a file to when you download it, your data stays encrypted. Our servers only store the encrypted versions, and decryption happens locally on your device with your key. Plus, with optional Two-Factor Authentication (2FA) via Google Authenticator, your account gets an extra layer of protection.
+        </p>
+    </div>
+    <p class="text-lg text-gray-400 mt-4 text-center">
+        With SecureBox, you’re in control—your files, your keys, your security.
+    </p>
+</div>
+
+    <!-- Floating Android Download Button -->
+    <a href="/static/securebox.apk" class="floating-btn">📲 Download APK</a>
+
+    <!-- Wave Animation -->
+    <div class="wave"></div>
+
+</body>
+</html>

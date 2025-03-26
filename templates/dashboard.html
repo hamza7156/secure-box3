@@ -3,41 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>SecureBox - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Sidebar animation */
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Glowing buttons */
+        .btn-glow {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        .btn-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Floating file effect */
+        .file-item {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .file-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Fade-in animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeIn 1s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Progress bar animation */
+        .progress-bar {
+            width: 100%;
+            background-color: #e5e7eb; /* Gray background */
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 1.5rem;
+            background-color: #3b82f6; /* Blue fill */
+            transition: width 1s ease-in-out;
+        }
+        .progress-fill.warning {
+            background-color: #f59e0b; /* Orange when nearing limit */
+        }
+        .progress-fill.full {
+            background-color: #ef4444; /* Red when limit reached */
+        }
+    </style>
 </head>
-<body>
-    <h1>Welcome, {{ username }}!</h1>
+<body class="bg-gray-900 text-white min-h-screen flex">
 
-    <h2>Your Files</h2>
-    <ul>
-        {% if files %}
-            {% for file in files %}
-                <li>
-                    {{ file }}
-                    
-                    <!-- Download section -->
-                    <form action="{{ url_for('download', filename=file) }}" method="POST" style="display:inline;">
-                        <input type="text" name="encryption_key" placeholder="Enter Key" required>
-                        <button type="submit">Download</button>
-                    </form> 
-    
-                    <!-- Delete section -->
-                    <form action="{{ url_for('delete', filename=file) }}" method="POST" style="display:inline;">
-                        <button type="submit">Delete</button>
-                    </form>
-                </li>
-            {% endfor %}
-        {% else %}
-            <li>No files uploaded yet.</li>
-        {% endif %}
-    </ul>
+    <!-- Sidebar -->
+    <aside class="sidebar w-64 bg-gray-800 p-6 flex flex-col space-y-4 fixed h-full">
+        <h2 class="text-xl font-bold text-blue-400">🔐 SecureBox</h2>
+        <p class="text-gray-400">Welcome, <span class="font-bold text-white">{{ username }}</span>!</p>
+        <hr class="border-gray-700">
+        <a href="{{ url_for('error_log') }}" class="text-gray-300 hover:text-blue-400">🔍 View Error Log</a>
+        <a href="{{ url_for('logout') }}" class="text-red-400 hover:text-white">🚪 Logout</a>
+    </aside>
 
-    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" required>
-        <input type="text" name="encryption_key" placeholder="Enter encryption key" required>
-        <button type="submit">Upload</button>
-    </form>
+    <!-- Main Content -->
+    <main class="ml-64 p-8 fade-in w-full">
+        <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
 
-    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="text-center {% if 'success' in message.lower() %}text-green-400{% else %}text-red-400{% endif %}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Storage Usage Section -->
+        <section class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-xl font-semibold text-blue-400 mb-2">📦 Storage Usage</h2>
+            <p class="text-lg mb-2">Storage Usage: {{ "%.2f"|format(storage_used_mb) }} MB / {{ storage_limit_mb }} MB</p>
+            <div class="progress-bar">
+                <div class="progress-fill {% if usage_percentage >= 100 %}full{% elif usage_percentage >= 80 %}warning{% endif %}" 
+                     style="width: {{ usage_percentage }}%;"></div>
+            </div>
+            {% if total_size >= storage_limit %}
+                <p class="text-red-500 mt-2">You’ve reached your 15MB storage limit! 
+                    <a href="{{ url_for('home') }}#pricing" class="text-blue-400 hover:underline">Upgrade your plan</a> to add more files.</p>
+            {% endif %}
+        </section>
+
+        <!-- Upload Section -->
+        <section class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-xl font-semibold text-blue-400 mb-2">📤 Upload a File</h2>
+            <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                {{ upload_form.hidden_tag() }}
+                <input type="file" name="file" class="w-full px-4 py-2 bg-gray-900 text-white rounded-lg focus:ring-2 focus:ring-blue-500">
+                {{ upload_form.encryption_key(class="w-full px-4 py-2 rounded-lg bg-gray-900 text-white focus:ring-2 focus:ring-blue-500", placeholder="Encryption Key") }}
+                <p class="text-gray-400 text-sm">Allowed file types: txt, pdf, png, jpg, jpeg, gif, doc, docx</p>
+                <button type="submit" class="btn-glow w-full bg-blue-500 hover:bg-blue-600 transition text-white py-2 rounded-lg shadow-md">
+                    Upload
+                </button>
+            </form>
+        </section>
+
+        <!-- Files List -->
+        <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold text-blue-400 mb-2">📁 Your Files</h2>
+            {% if files %}
+                <ul class="space-y-3">
+                    {% for file in files %}
+                        <li class="flex items-center justify-between p-3 bg-gray-900 rounded-lg file-item">
+                            <span class="text-gray-300">📄 {{ file }}</span>
+                            <div class="flex space-x-2">
+                                <!-- Download Form -->
+                                <form action="{{ url_for('download', filename=file) }}" method="POST" class="flex">
+                                    {{ download_form.hidden_tag() }}
+                                    {{ download_form.encryption_key(class="px-2 py-1 bg-gray-700 text-white rounded-lg", placeholder="Key") }}
+                                    <button type="submit" class="ml-2 px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg btn-glow">
+                                        ⬇️ Download
+                                    </button>
+                                </form>
+
+                                <!-- Delete Form -->
+                                <form action="{{ url_for('delete', filename=file) }}" method="POST">
+                                    {{ delete_form.hidden_tag() }}
+                                    <button type="submit" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg btn-glow">
+                                        ❌ Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-400">No files uploaded yet.</p>
+            {% endif %}
+        </section>
+    </main>
+
 </body>
 </html>
