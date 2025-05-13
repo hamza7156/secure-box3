@@ -1,112 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Romford Weather</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>London Time & Weather</title>
     <style>
-        /* Dark Theme */
         body {
-            background-color: #121212;
-            color: #e0e0e0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Time Display */
-        .time-container {
+            font-family: -apple-system, Helvetica, Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
             text-align: center;
-            margin-bottom: 10px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            -webkit-text-size-adjust: none;
         }
-        #current-time {
-            font-size: 4rem;
-            font-weight: 300;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        #clock-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        #current-date {
-            font-size: 1.2rem;
-            color: #a0a0a0;
-            margin-bottom: 20px;
+        #clock {
+            font-size: 3.5rem;
+            font-weight: 200;
+            letter-spacing: 1px;
         }
-
-        /* Weather Widget Container */
+        #date {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+        .colon {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
         .weather-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+        }
+        .tomorrow {
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 1.5s ease-out;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        .float {
-            animation: float 3s ease-in-out infinite;
         }
     </style>
 </head>
 <body>
-    <!-- Time Display -->
-    <div class="time-container">
-        <div id="current-time">--:--:--</div>
-        <div id="current-date">Loading...</div>
+    <div id="clock-container">
+        <div id="clock">--<span class="colon">:</span>--<span class="colon">:</span>--</div>
+        <div id="date">-- --- ----</div>
     </div>
 
-    <!-- Weather Widget -->
-    <div class="weather-container float">
-        <a class="weatherwidget-io" href="https://forecast7.com/en/51d600d23/rm3/" 
-           data-label_1="ROMFORD" 
-           data-label_2="WEATHER" 
-           data-font="Verdana" 
-           data-icons="Climacons Animated" 
-           data-theme="weather_one" 
-           data-days="5">
-           ROMFORD WEATHER
-        </a>
+    <div class="weather-container">
+        <div class="tomorrow"
+           data-location-id=""
+           data-language="EN"
+           data-unit-system="METRIC"
+           data-skin="dark"
+           data-widget-type="aqiPollen"
+           style="padding-bottom:22px;position:relative;">
+          <a href="https://weather.tomorrow.io/" rel="nofollow noopener noreferrer" target="_blank"
+             style="position: absolute; bottom: 0; transform: translateX(-50%); left: 50%;">
+            <img alt="Powered by Tomorrow.io" src="https://weather-website-client.tomorrow.io/img/powered-by.svg"
+                 width="250" height="18"/>
+          </a>
+        </div>
+        
+        <div class="tomorrow"
+           data-location-id=""
+           data-language="EN"
+           data-unit-system="METRIC"
+           data-skin="dark"
+           data-widget-type="upcoming"
+           style="padding-bottom:22px;position:relative;">
+          <a href="https://weather.tomorrow.io/" rel="nofollow noopener noreferrer" target="_blank"
+             style="position: absolute; bottom: 0; transform: translateX(-50%); left: 50%;">
+            <img alt="Powered by Tomorrow.io" src="https://weather-website-client.tomorrow.io/img/powered-by.svg"
+                 width="250" height="18"/>
+          </a>
+        </div>
     </div>
 
-    <!-- Time Update Script -->
     <script>
-        function updateTime() {
-            const now = new Date();
-            // Time
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+        function updateClock() {
+            // Get London time
+            var now = new Date();
+            var londonTime = new Date(now.toLocaleString('en-US', { 
+                timeZone: 'Europe/London' 
+            }));
             
-            // Date
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('current-date').textContent = now.toLocaleDateString('en-GB', options);
+            // Format time
+            var hours = londonTime.getHours();
+            var minutes = londonTime.getMinutes();
+            var seconds = londonTime.getSeconds();
+            
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            
+            document.getElementById('clock').innerHTML = 
+                hours + '<span class="colon">:</span>' + 
+                minutes + '<span class="colon">:</span>' + 
+                seconds;
+            
+            // Format date
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            var dayName = days[londonTime.getDay()];
+            var date = londonTime.getDate();
+            var monthName = months[londonTime.getMonth()];
+            var year = londonTime.getFullYear();
+            
+            document.getElementById('date').textContent = 
+                dayName + ' ' + date + ' ' + monthName + ' ' + year;
         }
-        setInterval(updateTime, 1000);
-        updateTime(); // Run immediately
+        
+        // Update immediately and then every second
+        updateClock();
+        setInterval(updateClock, 1000);
     </script>
-
-    <!-- WeatherWidget.io Script -->
+    
     <script>
-        !function(d,s,id){
-            var js,fjs=d.getElementsByTagName(s)[0];
-            if(!d.getElementById(id)){
-                js=d.createElement(s);
-                js.id=id;
-                js.src='https://weatherwidget.io/js/widget.min.js';
-                fjs.parentNode.insertBefore(js,fjs);
+        (function(d, s, id) {
+            if (d.getElementById(id)) {
+                if (window.__TOMORROW__) {
+                    window.__TOMORROW__.renderWidget();
+                }
+                return;
             }
-        }(document,'script','weatherwidget-io-js');
+            const fjs = d.getElementsByTagName(s)[0];
+            const js = d.createElement(s);
+            js.id = id;
+            js.src = "https://www.tomorrow.io/v1/widget/sdk/sdk.bundle.min.js";
+
+            fjs.parentNode.insertBefore(js, fjs);
+        })(document, 'script', 'tomorrow-sdk');
     </script>
 </body>
 </html>
