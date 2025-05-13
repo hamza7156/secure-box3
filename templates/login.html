@@ -1,4 +1,112 @@
-<a class="weatherwidget-io" href="https://forecast7.com/en/51d600d23/rm3/" data-label_1="ROMFORD" data-label_2="WEATHER" data-theme="mountains" >ROMFORD WEATHER</a>
-<script>
-!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romford Weather</title>
+    <style>
+        /* Dark Theme */
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Time Display */
+        .time-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        #current-time {
+            font-size: 4rem;
+            font-weight: 300;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        #current-date {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+        }
+
+        /* Weather Widget Container */
+        .weather-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Time Display -->
+    <div class="time-container">
+        <div id="current-time">--:--:--</div>
+        <div id="current-date">Loading...</div>
+    </div>
+
+    <!-- Weather Widget -->
+    <div class="weather-container float">
+        <a class="weatherwidget-io" href="https://forecast7.com/en/51d600d23/rm3/" 
+           data-label_1="ROMFORD" 
+           data-label_2="WEATHER" 
+           data-font="Verdana" 
+           data-icons="Climacons Animated" 
+           data-theme="weather_one" 
+           data-days="5">
+           ROMFORD WEATHER
+        </a>
+    </div>
+
+    <!-- Time Update Script -->
+    <script>
+        function updateTime() {
+            const now = new Date();
+            // Time
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // Date
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-GB', options);
+        }
+        setInterval(updateTime, 1000);
+        updateTime(); // Run immediately
+    </script>
+
+    <!-- WeatherWidget.io Script -->
+    <script>
+        !function(d,s,id){
+            var js,fjs=d.getElementsByTagName(s)[0];
+            if(!d.getElementById(id)){
+                js=d.createElement(s);
+                js.id=id;
+                js.src='https://weatherwidget.io/js/widget.min.js';
+                fjs.parentNode.insertBefore(js,fjs);
+            }
+        }(document,'script','weatherwidget-io-js');
+    </script>
+</body>
+</html>
